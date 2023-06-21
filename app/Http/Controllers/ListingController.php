@@ -6,6 +6,7 @@ use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class ListingController extends Controller
 {
@@ -35,21 +36,30 @@ class ListingController extends Controller
     //Store Listing Data
     public function store(Request $request)
     {
-        // var_dump($request->all());
-        $formFields = $request->all(); //validate([
-        // 'title' => 'required',
-        // 'company' => ['required', Rule::unique('listings', 'company')],
-        // 'location' => 'required',
-        // 'website' => 'required',
-        // 'email' => ['required', 'email'],
-        // 'tags' => 'required',
-        // 'description' => 'required'
-        // ]);
+        $validator = Validator::make($request->all(), [
+        'title' => 'required',
+        'company' => ['required', Rule::unique('listings', 'company')],
+        'location' => 'required',
+        'website' => 'required',
+        'email' => ['required', 'email'],
+        'tags' => 'required',
+        'description' => 'required'
+        ]);
+        $formFields = $validator->safe()->except(['_token']);
+        /*$formFields = $request->validate([
+        'title' => 'required',
+        'company' => ['required', Rule::unique('listings', 'company')],
+        'location' => 'required',
+        'website' => 'required',
+        'email' => ['required', 'email'],
+        'tags' => 'required',
+        'description' => 'required'
+        ]);
 
-        // die();
+        unset($formFields['_token']);*/
 
         Listing::create($formFields);
 
-        return redirect('/')->with('msg', 'Listings created successfully!');
+        return redirect('/')->with('msg', 'Listing created successfully!');
     }
 }
