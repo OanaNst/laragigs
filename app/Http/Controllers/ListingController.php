@@ -15,7 +15,7 @@ class ListingController extends Controller
     public function index()
     {
         return view('listings.index', [
-            'listings' => Listing::latest()->filter(request(['tag', 'search']))->get()
+            'listings' => Listing::latest()->filter(request(['tag', 'search']))->paginate(6)
         ]);
     }
 
@@ -45,18 +45,8 @@ class ListingController extends Controller
         'tags' => 'required',
         'description' => 'required'
         ]);
-        $formFields = $validator->safe()->except(['_token']);
-        /*$formFields = $request->validate([
-        'title' => 'required',
-        'company' => ['required', Rule::unique('listings', 'company')],
-        'location' => 'required',
-        'website' => 'required',
-        'email' => ['required', 'email'],
-        'tags' => 'required',
-        'description' => 'required'
-        ]);
 
-        unset($formFields['_token']);*/
+        $formFields = $validator->safe()->except(['_token']);
 
         Listing::create($formFields);
 
