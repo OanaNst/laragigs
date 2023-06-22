@@ -48,6 +48,10 @@ class ListingController extends Controller
 
         $formFields = $validator->safe()->except(['_token']);
 
+        if($request->hasFile('logo')) {
+            $formFields['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+
         Listing::create($formFields);
 
         return redirect('/')->with('msg', 'Listing created successfully!');
